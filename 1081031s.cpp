@@ -159,9 +159,6 @@ Node* find_shortest_Path(int** matrix, int x, int y,int x_ ,int y_ )
 
 	q.push(src);
 
-	// set to check if matrix cell is visited before or not
-	//int visited;
-	//visited.insert(src);
     bool visited[m][n];
 
     for (int i = 0; i < m; i++)
@@ -250,12 +247,7 @@ int start_x,start_y;
       myfile>>mmm>>nnn>>_limit;
       m=mmm;
       n=nnn;
-      //int probe;
-      //int kk=max(100/n,1);
-      //probe=min(100/m,kk);
-      //cout<<"probe:"<<probe<<endl;
       limit=_limit;
-       //cout<<m<<n<<limit<<endl;
       ///////////////////////////////////////////////////////////////////////
       char** f_matrix = new char*[m];//double pointer record pointer(for each row)
       for(int i = 0; i < m; ++i)
@@ -286,22 +278,13 @@ int start_x,start_y;
             }
         }
       }
-     //cout<<space_go<<endl;
+
       int**  dist_to_R_matrix = new int*[m];//double pointer record pointer(for each row)
       for(int i = 0; i < m; ++i)
          dist_to_R_matrix[i] = new int[n];//allocate elements space of each row
       for(int i = 0; i < m; ++i)
         for(int j = 0; j < n; ++j)
             dist_to_R_matrix[i][j] =0;
-
-
-
-
-
-
-
-    //Node* cur;
-
 
     int Bat=0;
     int BBat=0;
@@ -323,9 +306,7 @@ Node* temp_cur;
             dist_to_R_matrix[i][j]=-1;
 
         }
-        //cout<<dist_to_R_matrix[i][j]<<endl;
       }
-       // cout<<endl;
      }
 
 
@@ -339,7 +320,6 @@ Node* temp_cur;
     int** unclear_matrix = new int*[m];//double pointer record pointer(for each row)
     for(int j = 0; j < m; ++j)
         unclear_matrix[j] = new int[n];//allocate elements space of each row
-//cout<<"mom"<<endl;
 
     int total = 0;
     int smallest_total = 2147483647;//INT_MAX do not mutiply and add
@@ -347,7 +327,6 @@ Node* temp_cur;
     Bat*=2;
     int bat;
     int Battery_self=Bat;
-    //cout<<Bat<<endl;
 int factor=1;
 while( Bat<= limit && Bat<=smallest_total){
     bat=Bat;
@@ -357,10 +336,7 @@ while( Bat<= limit && Bat<=smallest_total){
    for(int i=0;i<m;i++)
       for(int j=0;j<n;j++)
         unclear_matrix[i][j]=matrix[i][j];
-
-  //ofstream outfile ("project2_temp.final");
- // outfile<<start_x<<" "<<start_y<<endl;
-
+  //////////////////////////////
   int step, step_uc, big_step;
   float benefits = 0;
   int potential_steps=0;
@@ -369,7 +345,6 @@ while( Bat<= limit && Bat<=smallest_total){
     big_step = 0;
     float Benefits = 0;
     cur = find_shortest_Path(matrix, temp_x, temp_y, start_x, start_y);
-    // cout<<Count_Path(cur)<<endl;
     int loop=0;
     int tiny_loop=0;
     for (int i = 0; i <m; i++)
@@ -378,27 +353,21 @@ while( Bat<= limit && Bat<=smallest_total){
           potential = find_shortest_Path(matrix, temp_x, temp_y, i, j);
           step = Count_Path(potential);
           step_uc = N_unclear_Path(potential, unclear_matrix);
-          //loop=step+pow(pow(abs( temp_y-j),2)+pow(abs(temp_x- i),2),0.5);
           loop=dist_to_R_matrix[i][j];
-          benefits = (float)step_uc / (float)(step);//+pow(pow(abs( temp_y-j),2)+pow(abs(temp_x- i),2),0.5));  // float
-          // if((dist_to_R_matrix[i][j]+step)<=bat && step_uc>=big){
+          benefits = (float)step_uc / (float)(step);
           if ((dist_to_R_matrix[i][j] + step) <= bat && benefits > Benefits) {
             delete cur;
             cur = potential;
-            // big=step_uc;
             tiny_loop=loop;
             Benefits = benefits;
             big_step = step;
           }
-          else if ((dist_to_R_matrix[i][j] + step) <= bat && benefits == Benefits  && loop>tiny_loop){// && (real_dis+big_step<(step+abs( temp_y-j)+abs(temp_x- i)))) {
+          else if ((dist_to_R_matrix[i][j] + step) <= bat && benefits == Benefits  && loop>tiny_loop){
             delete cur;
             cur = potential;
             tiny_loop=loop;
             Benefits = benefits;
             big_step = step;
-
-            //cout<<temp_x<<","<< temp_y<<","<< i<<","<< j<<endl;
-//cout<<real_dis<<endl;
           }
         }
       }
@@ -407,11 +376,9 @@ while( Bat<= limit && Bat<=smallest_total){
     if (temp_x == start_x && temp_y == start_y) {
       bat = Bat;
       run_Path(cur, unclear_matrix);
-      //show_Path(cur,outfile);
       total +=Count_Path(cur);
     } else {
       run_Path(cur, unclear_matrix);
-      //show_Path(cur,outfile);
       bat -= big_step;
       total += big_step;
     }
@@ -419,7 +386,6 @@ while( Bat<= limit && Bat<=smallest_total){
   if (!(temp_x == start_x && temp_y == start_y)) {
     cur = find_shortest_Path(matrix, temp_x, temp_y, start_x, start_y);
     run_Path(cur, unclear_matrix);
-    //show_Path(cur,outfile);
     total += Count_Path(cur);
   }
 
@@ -427,8 +393,7 @@ while( Bat<= limit && Bat<=smallest_total){
     if(total<smallest_total){
             Battery_self=Bat;
     smallest_total=total;
-//cout<< Battery_self<<endl;
-//cout<<":"<<smallest_total<<endl;
+
     }
 
     factor++;
@@ -483,10 +448,10 @@ while( Bat<= limit && Bat<=smallest_total){
     delete potential;
 
 }
-
+///////////////////
 ofstream Toutfile ("final.path");
 Toutfile<< smallest_total<<endl;
-///////////////////
+
 Bat=Battery_self;
 bat=Bat;
 total = 0;
@@ -495,10 +460,8 @@ total = 0;
    for(int i=0;i<m;i++)
       for(int j=0;j<n;j++)
         unclear_matrix[i][j]=matrix[i][j];
-
-  //ofstream outfile ("project2_temp.final");
+////////////////////////////////////////////////////
   Toutfile<<start_x<<" "<<start_y<<endl;
-//Toutfile<< std::flush;
   int step, step_uc, big_step;
   float benefits = 0;
   int potential_steps=0;
@@ -507,32 +470,25 @@ total = 0;
     big_step = 0;
     float Benefits = 0;
     cur = find_shortest_Path(matrix, temp_x, temp_y, start_x, start_y);
-    // cout<<Count_Path(cur)<<endl;
     int loop=0;
     int tiny_loop=0;
     for (int i = 0; i <m; i++)
       for (int j = 0; j < n; j++) {
         if (unclear_matrix[i][j] == 0) {
-                //delete potential;
           potential = find_shortest_Path(matrix, temp_x, temp_y, i, j);
           step = Count_Path(potential);
           step_uc = N_unclear_Path(potential, unclear_matrix);
-          //loop=step+pow(pow(abs( temp_y-j),2)+pow(abs(temp_x- i),2),0.5);
           loop=dist_to_R_matrix[i][j];
-          benefits = (float)step_uc / (float)(step);//+pow(pow(abs( temp_y-j),2)+pow(abs(temp_x- i),2),0.5));  // float
-          // if((dist_to_R_matrix[i][j]+step)<=bat && step_uc>=big){
+          benefits = (float)step_uc / (float)(step);
           if ((dist_to_R_matrix[i][j] + step) <= bat && benefits > Benefits) {
             delete cur;
-            //cur=NULL;
             cur = potential;
-            // big=step_uc;
             tiny_loop=loop;
             Benefits = benefits;
             big_step = step;
           }
-          else if ((dist_to_R_matrix[i][j] + step) <= bat && benefits == Benefits  && loop>tiny_loop){// && (real_dis+big_step<(step+abs( temp_y-j)+abs(temp_x- i)))) {
+          else if ((dist_to_R_matrix[i][j] + step) <= bat && benefits == Benefits  && loop>tiny_loop){
             delete cur;
-            //cur=NULL;
             cur = potential;
             tiny_loop=loop;
             Benefits = benefits;
@@ -548,11 +504,9 @@ total = 0;
       show_Path(cur,Toutfile);
           total += Count_Path(cur);
     int aaa= Count_Path(cur);
-    //cout<<aaa<<endl;
     } else {
       run_Path(cur, unclear_matrix);
       show_Path(cur,Toutfile);
-      //cout<<big_step<<endl;
       bat -= big_step;
       total += big_step;
     }
@@ -569,25 +523,8 @@ total = 0;
    // cout<<aaa<<endl;
   }
   delete cur;
- //           cur=NULL;
   delete potential;
- //potential=NULL;
-  //if(smallest_total!=total){
-  //  cout<<"unexpected case:"<<Bat<<endl;
- //  cout<<smallest_total<<"!="<<total<<endl;
- // }
-  //cout<<Bat<<endl;
- // cout<<BBat*2<<endl;
- // cout<<total<<endl;
-  // for(int i=0;i<m;i++){
-   // for(int j=0;j<n;j++){
-  //      cout<<unclear_matrix[i][j];
-    //  }
-    //  cout<<endl;
-   //}
-
-
-        Toutfile.close();
+  Toutfile.close();
 
 	return 0;
 
