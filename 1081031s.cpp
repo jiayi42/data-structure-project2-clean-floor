@@ -236,3 +236,40 @@ void run_Path(Node* path,int** unclear_matrix)
 	unclear_matrix[path->getx()][path->gety()]=2;
 	//return;
 }
+int main()
+{
+
+
+
+    ifstream myfile("p2");
+      int mmm;
+      int nnn;
+      int _limit;
+int start_x,start_y;
+
+      myfile>>mmm>>nnn>>_limit;
+      m=mmm;
+      n=nnn;
+      int probe;
+      int kk=max(100/n,1);
+      probe=min(100/m,kk);
+      cout<<"probe:"<<probe<<endl;
+      limit=_limit;
+       //cout<<m<<n<<limit<<endl;
+      ///////////////////////////////////////////////////////////////////////
+      char** f_matrix = new char*[m];//double pointer record pointer(for each row)
+      for(int i = 0; i < m; ++i)
+        f_matrix[i] = new char[n];//allocate elements space of each row
+
+      for(int i = 0; i < m; ++i)
+        myfile>>f_matrix[i];
+
+    myfile.close();
+ 
+
+
+        //Toutfile.close();
+
+	return 0;
+
+}
