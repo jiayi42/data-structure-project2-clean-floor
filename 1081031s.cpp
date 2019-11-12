@@ -241,7 +241,7 @@ int main()
 
 
 
-    ifstream myfile("p2");
+    ifstream myfile("floor.data");
       int mmm;
       int nnn;
       int _limit;
@@ -484,7 +484,7 @@ while( Bat<= limit && Bat<=smallest_total){
 
 }
 
-ofstream Toutfile ("project2");
+ofstream Toutfile ("final.path");
 Toutfile<< smallest_total<<endl;
 ///////////////////
 Bat=Battery_self;
