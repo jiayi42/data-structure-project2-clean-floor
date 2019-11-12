@@ -121,7 +121,7 @@ void show_Path(Node* path, ofstream& f)
 		return;
 	show_Path(path->getp(),f);
 	if(path->getp()!=NULL){
-        cout << "(" << path->getx() << ", " << path->gety() << ") ";
+        //cout << "(" << path->getx() << ", " << path->gety() << ") ";
         f<< path->getx() << " " << path->gety()<<endl;
 	}
 
@@ -250,10 +250,10 @@ int start_x,start_y;
       myfile>>mmm>>nnn>>_limit;
       m=mmm;
       n=nnn;
-      int probe;
-      int kk=max(100/n,1);
-      probe=min(100/m,kk);
-      cout<<"probe:"<<probe<<endl;
+      //int probe;
+      //int kk=max(100/n,1);
+      //probe=min(100/m,kk);
+      //cout<<"probe:"<<probe<<endl;
       limit=_limit;
        //cout<<m<<n<<limit<<endl;
       ///////////////////////////////////////////////////////////////////////
@@ -286,7 +286,7 @@ int start_x,start_y;
             }
         }
       }
-     cout<<space_go<<endl;
+     //cout<<space_go<<endl;
       int**  dist_to_R_matrix = new int*[m];//double pointer record pointer(for each row)
       for(int i = 0; i < m; ++i)
          dist_to_R_matrix[i] = new int[n];//allocate elements space of each row
@@ -478,7 +478,7 @@ while( Bat<= limit && Bat<=smallest_total){
 
 
 
-    cout<<Bat<<endl;
+    //cout<<Bat<<endl;
     delete cur;
     delete potential;
 
@@ -548,11 +548,11 @@ total = 0;
       show_Path(cur,Toutfile);
           total += Count_Path(cur);
     int aaa= Count_Path(cur);
-    cout<<aaa<<endl;
+    //cout<<aaa<<endl;
     } else {
       run_Path(cur, unclear_matrix);
       show_Path(cur,Toutfile);
-      cout<<big_step<<endl;
+      //cout<<big_step<<endl;
       bat -= big_step;
       total += big_step;
     }
@@ -566,7 +566,7 @@ total = 0;
     //Toutfile<< std::flush;
     total += Count_Path(cur);
     int aaa= Count_Path(cur);
-    cout<<aaa<<endl;
+   // cout<<aaa<<endl;
   }
   delete cur;
  //           cur=NULL;
