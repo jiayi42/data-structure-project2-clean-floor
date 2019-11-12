@@ -348,9 +348,144 @@ Node* temp_cur;
     int bat;
     int Battery_self=Bat;
     //cout<<Bat<<endl;
+int factor=1;
+while( Bat<= limit && Bat<=smallest_total){
+    bat=Bat;
+    total = 0;
+    temp_x=start_x;
+    temp_y=start_y;
+   for(int i=0;i<m;i++)
+      for(int j=0;j<n;j++)
+        unclear_matrix[i][j]=matrix[i][j];
+
+  //ofstream outfile ("project2_temp.final");
+ // outfile<<start_x<<" "<<start_y<<endl;
+
+  int step, step_uc, big_step;
+  float benefits = 0;
+  int potential_steps=0;
+  while (!Isclear(unclear_matrix, m, n)) {
+    int big = 0;
+    big_step = 0;
+    float Benefits = 0;
+    cur = find_shortest_Path(matrix, temp_x, temp_y, start_x, start_y);
+    // cout<<Count_Path(cur)<<endl;
+    int loop=0;
+    int tiny_loop=0;
+    for (int i = 0; i <m; i++)
+      for (int j = 0; j < n; j++) {
+        if (unclear_matrix[i][j] == 0) {
+          potential = find_shortest_Path(matrix, temp_x, temp_y, i, j);
+          step = Count_Path(potential);
+          step_uc = N_unclear_Path(potential, unclear_matrix);
+          //loop=step+pow(pow(abs( temp_y-j),2)+pow(abs(temp_x- i),2),0.5);
+          loop=dist_to_R_matrix[i][j];
+          benefits = (float)step_uc / (float)(step);//+pow(pow(abs( temp_y-j),2)+pow(abs(temp_x- i),2),0.5));  // float
+          // if((dist_to_R_matrix[i][j]+step)<=bat && step_uc>=big){
+          if ((dist_to_R_matrix[i][j] + step) <= bat && benefits > Benefits) {
+            delete cur;
+            cur = potential;
+            // big=step_uc;
+            tiny_loop=loop;
+            Benefits = benefits;
+            big_step = step;
+          }
+          else if ((dist_to_R_matrix[i][j] + step) <= bat && benefits == Benefits  && loop>tiny_loop){// && (real_dis+big_step<(step+abs( temp_y-j)+abs(temp_x- i)))) {
+            delete cur;
+            cur = potential;
+            tiny_loop=loop;
+            Benefits = benefits;
+            big_step = step;
+
+            //cout<<temp_x<<","<< temp_y<<","<< i<<","<< j<<endl;
+//cout<<real_dis<<endl;
+          }
+        }
+      }
+    temp_x = cur->getx();
+    temp_y = cur->gety();
+    if (temp_x == start_x && temp_y == start_y) {
+      bat = Bat;
+      run_Path(cur, unclear_matrix);
+      //show_Path(cur,outfile);
+      total +=Count_Path(cur);
+    } else {
+      run_Path(cur, unclear_matrix);
+      //show_Path(cur,outfile);
+      bat -= big_step;
+      total += big_step;
+    }
+  }
+  if (!(temp_x == start_x && temp_y == start_y)) {
+    cur = find_shortest_Path(matrix, temp_x, temp_y, start_x, start_y);
+    run_Path(cur, unclear_matrix);
+    //show_Path(cur,outfile);
+    total += Count_Path(cur);
+  }
+
+
+    if(total<smallest_total){
+            Battery_self=Bat;
+    smallest_total=total;
+//cout<< Battery_self<<endl;
+//cout<<":"<<smallest_total<<endl;
+    }
+
+    factor++;
+    //Bat+=2;
+    if(factor<5){
+        if(space_go<100)
+            Bat+=2;
+        else if(space_go<200 &&space_go>=100)
+            Bat+=4;
+        else if(space_go<400 &&space_go>=200)
+            Bat+=8;
+        else
+            Bat+=20;
+    }
+
+    else if(factor<10 &&factor>=5){
+        if(space_go<100)
+            Bat+=2;
+        else if(space_go<200 &&space_go>=100)
+            Bat+=8;
+        else if(space_go<400 &&space_go>=200)
+            Bat+=20;
+        else
+            Bat+=30;
+    }
+
+    else if((factor)<15 &&(factor)>=10){
+        if(space_go<100)
+            Bat+=2;
+        else if(space_go<200 &&space_go>=100)
+            Bat+=12;
+        else if(space_go<400 &&space_go>=200)
+            Bat+=40;
+        else
+            Bat+=60;
+    }
+    else if((factor)<30 &&(factor)>=15 &&space_go<100){
+            Bat+=2;
+    }
+    else
+         break;
+    if(space_go>1000){
+            Bat+=100;
+            if(factor>5)
+                break;
+    }
+
+
+
+    cout<<Bat<<endl;
+    delete cur;
+    delete potential;
+
+}
 
 ofstream Toutfile ("project2");
-//Toutfile<< smallest_total<<endl;
+Toutfile<< smallest_total<<endl;
 ///////////////////
 Bat=Battery_self;
 bat=Bat;
