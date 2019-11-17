@@ -347,6 +347,7 @@ if(space_go<1500){
   cout<<"mom"<< space_go<<endl;
 
  while( Bat<= limit && Bat<=smallest_total){
+   cout<<Bat<<endl;
     bat=Bat;
     total = 0;
     temp_x=start_x;
@@ -359,6 +360,7 @@ if(space_go<1500){
   float benefits = 0;
   int potential_steps=0;
   while (!Isclear(unclear_matrix, m, n)) {
+    
     int big = 0;
     big_step = 0;
     float Benefits = 0;
@@ -448,11 +450,11 @@ if(space_go<1500){
         else
             Bat+=60;
     }
-    else if((factor)<30 &&(factor)>=15 &&space_go<100){
+    else if((factor)<30 &&(factor)>=15){
             Bat+=2;
     }
-    else
-         break;
+   // else
+    //     break;
     if(space_go>400){
             if(factor>2)
             Bat+=(space_go/10-20);
@@ -462,7 +464,7 @@ if(space_go<1500){
 
 
 
-    cout<<Bat<<endl;
+    
     delete cur;
     delete potential;
 
@@ -473,6 +475,7 @@ Toutfile<< smallest_total<<endl;
 
 Bat=Battery_self;
 bat=Bat;
+cout<<"final battery:"<<Bat<<endl;
 total = 0;
     temp_x=start_x;
     temp_y=start_y;
