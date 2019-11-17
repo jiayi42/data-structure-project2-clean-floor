@@ -347,7 +347,6 @@ if(space_go<1500){
   cout<<"mom"<< space_go<<endl;
 
  while( Bat<= limit && Bat<=smallest_total){
-   cout<<Bat<<endl;
     bat=Bat;
     total = 0;
     temp_x=start_x;
@@ -360,7 +359,6 @@ if(space_go<1500){
   float benefits = 0;
   int potential_steps=0;
   while (!Isclear(unclear_matrix, m, n)) {
-    
     int big = 0;
     big_step = 0;
     float Benefits = 0;
@@ -450,11 +448,11 @@ if(space_go<1500){
         else
             Bat+=60;
     }
-    else if((factor)<30 &&(factor)>=15){
+    else if((factor)<30 &&(factor)>=15 &&space_go<100){
             Bat+=2;
     }
-   // else
-    //     break;
+    else
+         break;
     if(space_go>400){
             if(factor>2)
             Bat+=(space_go/10-20);
@@ -464,7 +462,7 @@ if(space_go<1500){
 
 
 
-    
+    cout<<Bat<<endl;
     delete cur;
     delete potential;
 
@@ -475,7 +473,6 @@ Toutfile<< smallest_total<<endl;
 
 Bat=Battery_self;
 bat=Bat;
-cout<<"final battery:"<<Bat<<endl;
 total = 0;
     temp_x=start_x;
     temp_y=start_y;
@@ -596,91 +593,31 @@ cout<<start_x<<" "<<start_y<<endl;
       Reverse_show_Path(cur_to_R_matrix[ii][jj],Toutfile);
       bat -= big;
       total += big;
-      //cout<<ii<<" "<<jj<<endl;
-    if(!Isclear(unclear_matrix, m, n)){
-	    // create a queue and enqueue first node
-     // cout<<"dddsds"<<endl;
-        Queue<Node*> q;
-        Node* src;
-        src=new Node(x,y);
-        q.push(src);
 
-        bool visited[m][n];
-
-        for (int i = 0; i < m; i++)
-            for (int j = 0; j < n; j++){
-                    visited[i][j] = false;
-                    if (matrix[i][j] == 1)
-                    visited[i][j] = true;
-            }
-
-        visited[x][y] = true;
-
-        // run till queue is not empty
-
-        while (!q.IsEmpty())
-        {
-            // pop front node from the queue and process it
-            Node* curr = q.Front();
-            q.pop();
-
-            int i = curr->getx();
-            int j = curr->gety();
-            delete curr;
-            visited[i][j]=true;
-            if(dist_to_R_matrix[i][j]<=(bat+3)){
-              int bigg= Count_Path(cur_to_R_matrix[i][j]);
-              run_Path(cur_to_R_matrix[i][j], unclear_matrix);
-              show_Path(cur_to_R_matrix[i][j],Toutfile);
-              bat -= bigg;
-              total += bigg;
-              //q.~Queue();
-              break;
-            }
-            unclear_matrix[i][j]=2;
-            Toutfile<< i << " " <<j<<endl;
+      if(bat>big+2){
+        int row[] = { -1, 0, 0, 1 };
+        int col[] = { 0, -1, 1, 0 };
+        for (int k = 0; k < 4; k++){
+            int ix = ii + row[k] ;
+            int jy = jj + col[k] ;
+            if(unclear_matrix[ix][jy]==0){
+            Toutfile<< ix << " " <<jy<<endl;
               bat -= 1;
               total += 1;
-
-
-            //int n = matrix[i][j];
-
-                int row[] = { -1, 0, 0, 1 };
-                int col[] = { 0, -1, 1, 0 };
-            int x_=i;int y_=j;
-            for (int k = 0; k < 4; k++)
-            {
-
-               x = i + row[k] ;
-               y = j + col[k] ;
-
-
-              if (isValid(x, y))
-              {
-
-                Node*next;
-                next=new Node(x,y);
-                if (!visited[x][y])
-                {
-                  q.push(next);
-
-
-
-                }
-              }
+              ii=ix;
+              jj=jy;
+              break;
             }
         }
-        cout<<""<<endl;
-    }
-    else{
+      }
+
       big= Count_Path(cur_to_R_matrix[ii][jj]);
       run_Path(cur_to_R_matrix[ii][jj], unclear_matrix);
       show_Path(cur_to_R_matrix[ii][jj],Toutfile);
       bat -= big;
       total += big;
       cout<<""<<endl;
-      break;
-    }
+
 
 
 
@@ -689,11 +626,7 @@ cout<<start_x<<" "<<start_y<<endl;
 
   }
   cout<<total;
-    //for(int i=0; i<m;i++){
-   //   for(int j=0;j<n;j++)
-     //   cout<<unclear_matrix[i][j];
-  //    cout<<endl;
-  //  }
+
   //delete cur;
   //delete potential;
   Toutfile.close();
