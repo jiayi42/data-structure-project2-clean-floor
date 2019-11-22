@@ -14,7 +14,7 @@ class QNode
 {
 	public:
 	T data;
-	QNode<T> *link;
+	QNode<T>* link;
 	//~QNode(){
 	//delete link;
 	//link=NULL;
@@ -100,10 +100,6 @@ class Node
         {return x < ob->x || (x == ob->x && y < ob->y);}
 };
 
-// Below arrays details all 4 possible movements from a cell
-
-
-// The function returns false if pt is not a valid position
 bool isValid(int x, int y)
 {return (x >= 0 && x < m) && (y >= 0 && y < n);}
 int count_Path(Node* path)
@@ -273,7 +269,7 @@ Node* find_shortest_Path(int** matrix, int x, int y,int x_ ,int y_ )
 
 }
 
-void spanning_tree_bfs_1000000_terminate(int** matrix,Node*** cur_to_R_matrix,int x,int y)
+void spanning_tree_bfs_1000000_terminate(int** matrix,Node*** cur_to_R_matrix,int x,int y,int** Rmatrix)
 {
 	// create a queue and enqueue first node
 
@@ -302,28 +298,34 @@ void spanning_tree_bfs_1000000_terminate(int** matrix,Node*** cur_to_R_matrix,in
 
 		int i = curr->getx();
 		int j = curr->gety();
+    //cout<<i<<" "<<j<<endl;
         cur_to_R_matrix[i][j]=curr;
 		//int n = matrix[i][j];
-
-        int row[] = { -1, 0, 0, 1 };
-        int col[] = { 0, -1, 1, 0 };
+  //  cout<<i<<" "<<j<<endl;
+        int row[4] = { -1, 0, 0, 1 };
+        int col[4] = { 0, -1, 1, 0 };
 		for (int k = 0; k < 4; k++)
 		{
 
 			int x = i + row[k] ;
 			int y = j + col[k] ;
 
-
+//cout<<"as"<<x<<" "<<y<<endl;
 			if (isValid(x, y))
 			{
-
+        //cout<<x<<" "<<y<<endl;
 				Node *next;
+        
 				next=new Node(x,y);
+        //cout<<"dd"<<i<<" "<<j<<endl;
 				next->setp(curr);
-
+      
 
 				if (!visited[x][y])
 				{
+          
+          Rmatrix[x][y]=Rmatrix[i][j]+1;
+          
 					q.push(next);
 					visited[x][y]=true;
 				}
@@ -644,7 +646,7 @@ total = 0;
   //delete potential;
   Toutfile.close();
 }
-else if(space_go>=1000 && space_go<30000){
+else if(space_go>=1000){// && space_go<30000){
 
     int**  dist_to_R_matrix = new int*[m];//double pointer record pointer(for each row)
     for(int i = 0; i < m; ++i)
@@ -655,12 +657,13 @@ else if(space_go>=1000 && space_go<30000){
    Node***  cur_to_R_matrix = new Node**[m];//double pointer record pointer(for each row)
     for(int i = 0; i < m; ++i)
         cur_to_R_matrix[i] = new Node*[n];//allocate elements space of each row
-    spanning_tree_bfs_1000000_terminate(matrix, cur_to_R_matrix,start_x,start_y);
-
+    //cout<<"span"<<endl;
+    spanning_tree_bfs_1000000_terminate(matrix, cur_to_R_matrix,start_x,start_y,dist_to_R_matrix);
+    //cout<<"span"<<endl;
     for(int i=0;i<m;i++){
       for(int j=0;j<n;j++){
         if(matrix[i][j]!=1){
-                dist_to_R_matrix[i][j]=Count_Path(cur_to_R_matrix[i][j]);
+                //if(dist_to_R_matrix[i][j]!=Count_Path(cur_to_R_matrix[i][j]))cout<<"ddd";
                 if(dist_to_R_matrix[i][j]>BBat)
                     BBat=dist_to_R_matrix[i][j];
 
@@ -690,192 +693,32 @@ else if(space_go>=1000 && space_go<30000){
   int potential_steps=0;
   int ii=start_x;
   int jj=start_y;
-
+Node* helper;
   while (!Isclear(unclear_matrix, m, n)) {
 
        bat=Bat;
       int loop=0;
       int big = 0;
-      for (int i = 0; i <m; i++)
+      for (int i = 0; i <m; i++){
         for (int j = 0; j < n; j++) {
           if (unclear_matrix[i][j] == 0) {
-            if(dist_to_R_matrix[i][j]>loop && matrix[i][j]==0){
-                  loop=dist_to_R_matrix[i][j];
+                  //cout<<i<<" "<<j<<endl;
                   ii=i;
                   jj=j;
+                  break;
             }
-          }
         }
-      big= Count_Path(cur_to_R_matrix[ii][jj]);
-      int x = ii;
-      int y = jj;
+          if (unclear_matrix[ii][jj] == 0)  break;
+      }
+
+      big= dist_to_R_matrix[ii][jj];
       run_Path(cur_to_R_matrix[ii][jj], unclear_matrix);
       show_Path(cur_to_R_matrix[ii][jj],Toutfile);
       bat -= big;
       total += big;
       bool sig=true;
-
+      
       while(bat>(dist_to_R_matrix[ii][jj]+1) && sig){
-        sig=false;
-        int longest=0;
-        int row[] = { -1, 0, 0, 1 };
-        int col[] = { 0, -1, 1, 0 };
-        int iii=ii;int jjj=jj;
-        for (int k = 0; k < 4; k++){
-            int ix = iii + row[k] ;
-            int jy = jjj + col[k] ;
-            if(unclear_matrix[ix][jy]==0  && isValid(ix,jy) && dist_to_R_matrix[ix][jy]>=longest){
-              longest=dist_to_R_matrix[ix][jy];
-              ii=ix;
-              jj=jy;
-              sig=true;
-            }
-        }
-        if(sig){
-            unclear_matrix[ii][jj]=2;
-            Toutfile<< ii << " " <<jj<<endl;
-            bat -= 1;
-            total += 1;
-        }
-      }
-
-      big= Count_Path(cur_to_R_matrix[ii][jj]);
-      run_Path(cur_to_R_matrix[ii][jj], unclear_matrix);
-      Reverse_show_Path(cur_to_R_matrix[ii][jj],Toutfile);
-      bat -= big;
-      total += big;
-      //cout<<""<<endl;
-
-
-
-
-
-
-
-  }
-  //cout<<total;
-
-  //delete cur;
-  //delete potential;
-  Toutfile.close();
-    ofstream outputFile("final.path");
-    ifstream inputFile("temp_final.path");
-
-
-    outputFile << total<<endl;
-
-
-    outputFile << inputFile.rdbuf();
-
-    inputFile.close();
-    outputFile.close();
-
-   std::remove("temp_final.path");
-
-}
-else if(space_go>=30000){
-
-    int**  dist_to_R_matrix = new int*[m];//double pointer record pointer(for each row)
-    for(int i = 0; i < m; ++i)
-        dist_to_R_matrix[i] = new int[n];//allocate elements space of each row
-    for(int i = 0; i < m; ++i)
-      for(int j = 0; j < n; ++j)
-          dist_to_R_matrix[i][j] =0;
-   Node***  cur_to_R_matrix = new Node**[m];//double pointer record pointer(for each row)
-    for(int i = 0; i < m; ++i)
-        cur_to_R_matrix[i] = new Node*[n];//allocate elements space of each row
-  //cout<< "momw"<<endl;
-    spanning_tree_bfs_1000000_terminate(matrix, cur_to_R_matrix,start_x,start_y);
-
-  ofstream Toutfile ("temp_final.path");
-  //cout<< "ssmomw"<<endl;
-
-  Bat=limit;
-  bat=Bat;
-  total = 0;
-  temp_x=start_x;
-  temp_y=start_y;
-  for(int i=0;i<m;i++)
-    for(int j=0;j<n;j++)
-      unclear_matrix[i][j]=matrix[i][j];
-////////////////////////////////////////////////////
-//cout<<start_x<<" "<<start_y<<endl;
-  Toutfile<<start_x<<" "<<start_y<<endl;
-  int step, step_uc, big_step;
-  float benefits = 0;
-  int potential_steps=0;
-  int ii=start_x;
-  int jj=start_y;
-
-//cout<<"ds"<<endl;
-  while (!Isclear(unclear_matrix, m, n)) {
-
-       bat=Bat;
-      int loop=0;
-      int big = 0;
-      bool gg= false;
-      if(start_x>m/2 && start_y>n/2)
-      for (int i = 0; i <m; i++){
-        for (int j = 0; j < n; j++) {
-          if (unclear_matrix[i][j] == 0) {
-                  ii=i;
-                  jj=j;
-                  gg=true;
-                  break;
-          }
-        }
-        if(gg)break;
-      }
-
-      if(start_x<=m/2 && start_y<=n/2)
-      for (int i = m-1; i >=0; i--){
-        for (int j = n-1; j >=0; j--) {
-          if (unclear_matrix[i][j] == 0) {
-                  ii=i;
-                  jj=j;
-                  gg=true;
-                  break;
-          }
-        }
-        if(gg)break;
-      }
-
-      if(start_x>m/2 && start_y<=n/2)
-      for (int i = 0; i <m; i++){
-        for (int j = n-1; j >=0; j--) {
-          if (unclear_matrix[i][j] == 0) {
-                  ii=i;
-                  jj=j;
-                  gg=true;
-                  break;
-          }
-        }
-        if(gg)break;
-      }
-
-      if(start_x<=m/2 && start_y>n/2)
-      for (int i = m-1; i>=0; i--){
-        for (int j = 0; j < n; j++) {
-          if (unclear_matrix[i][j] == 0) {
-                  ii=i;
-                  jj=j;
-                  gg=true;
-                  break;
-          }
-        }
-        if(gg)break;
-      }
-
-
-      big= Count_Path(cur_to_R_matrix[ii][jj]);
-      int x = ii;
-      int y = jj;
-      run_Path(cur_to_R_matrix[ii][jj], unclear_matrix);
-      show_Path(cur_to_R_matrix[ii][jj],Toutfile);
-      bat -= big;
-      total += big;
-      bool sig=true;
-      while(bat>(Bat/2+1) && sig){//(Bat/2+2)
             sig=false;
         int row[] = { -1, 0, 0, 1 };
         int col[] = { 0, -1, 1, 0 };
@@ -894,15 +737,54 @@ else if(space_go>=30000){
               break;
             }
         }
-      }
 
-      big= Count_Path(cur_to_R_matrix[ii][jj]);
+         while(bat>(dist_to_R_matrix[ii][jj]+1)  && !sig && dist_to_R_matrix[ii][jj]>1){
+           helper=cur_to_R_matrix[ii][jj];
+           int ix,jy;
+            for (int k = 0; k < 4; k++){
+              ix= ii + row[k] ;
+              jy = jj + col[k] ;
+              if(unclear_matrix[ix][jy]==0 && isValid(ix,jy)){
+               unclear_matrix[ix][jy]=2;
+               Toutfile<< ix << " " <<jy<<endl;
+                bat -= 1;
+                total += 1;
+                ii=ix;
+                jj=jy;
+              helper=cur_to_R_matrix[ii][jj];
+              sig=true;
+              break;
+               }
+            }
+            if(bat>(dist_to_R_matrix[ii][jj]+1) && helper->getp()!=NULL && !sig){
+              helper=helper->getp();
+              ii = helper->getx() ;
+              jj = helper->gety() ;
+              unclear_matrix[ii][jj]=2;
+              Toutfile<< ii << " " <<jj<<endl;
+              bat -= 1;
+              total += 1;
+            }
+            if(dist_to_R_matrix[ii][jj]==1){
+              //cout<<"ss"<<endl;
+               break;
+             }
+        }
+      }
+      //cout<<"sqs"<<endl;
+      big= dist_to_R_matrix[ii][jj];
       run_Path(cur_to_R_matrix[ii][jj], unclear_matrix);
       Reverse_show_Path(cur_to_R_matrix[ii][jj],Toutfile);
       bat -= big;
       total += big;
+      //cout<<big<<endl;
+     
 
-    //cout<<""<<endl;
+
+
+
+
+
   }
   //cout<<total;
 
@@ -924,6 +806,7 @@ else if(space_go>=30000){
    std::remove("temp_final.path");
 
 }
+
 return 0;
 
 
