@@ -108,9 +108,15 @@ bool isValid(int x, int y)
 {return (x >= 0 && x < m) && (y >= 0 && y < n);}
 int count_Path(Node* path)
 {
-	if (path==NULL)
-		return 0;
-	int len = count_Path(path->getp()) + 1;
+	int len=0;
+    Node* p=path;
+	while(p!=NULL){
+        len++;
+        p=p->getp();
+	}
+		//return;
+     delete p;p=NULL;
+	//int len = count_Path(path->getp()) + 1;
 	return len;
 }
 int Count_Path(Node* path)
@@ -147,13 +153,17 @@ void show_Path(Node* path, ofstream& f)
 
 void reverse_show_Path(Node* path, ofstream& f)
 {
-	if (path==NULL)
-		return;
+    Node* p=path;
+	while(p!=NULL){
+        f<< p->getx() << " " << p->gety()<<endl;
+        p=p->getp();
+	}
+		//return;
+     delete p;p=NULL;
 
-    f<< path->getx() << " " << path->gety()<<endl;
 	//if(path->getp()!=NULL){
         //cout << "(" << path->getx() << ", " << path->gety() << ") ";
-	reverse_show_Path(path->getp(),f);
+	//reverse_show_Path(path->getp(),f);
    // }
 
 
@@ -662,7 +672,7 @@ else if(space_go>=1000 && space_go<30000){
      }
   //Show_Path(cur_to_R_matrix[45][45]);
   ofstream Toutfile ("temp_final.path");
- // cout<< "momw"<<endl;
+ //cout<< "momw"<<BBat*2<<endl;
 
   Bat=limit;
   bat=Bat;
@@ -705,7 +715,7 @@ else if(space_go>=1000 && space_go<30000){
       total += big;
       bool sig=true;
 
-      while(bat>(dist_to_R_matrix[ii][jj]+2) && sig){
+      while(bat>(dist_to_R_matrix[ii][jj]+1) && sig){
         sig=false;
         int longest=0;
         int row[] = { -1, 0, 0, 1 };
@@ -797,7 +807,7 @@ else if(space_go>=30000){
   int ii=start_x;
   int jj=start_y;
 
-
+//cout<<"ds"<<endl;
   while (!Isclear(unclear_matrix, m, n)) {
 
        bat=Bat;
@@ -865,7 +875,7 @@ else if(space_go>=30000){
       bat -= big;
       total += big;
       bool sig=true;
-      while(bat>(Bat/2+2) && sig){
+      while(bat>(Bat/2+1) && sig){//(Bat/2+2)
             sig=false;
         int row[] = { -1, 0, 0, 1 };
         int col[] = { 0, -1, 1, 0 };
@@ -892,6 +902,7 @@ else if(space_go>=30000){
       bat -= big;
       total += big;
 
+    //cout<<""<<endl;
   }
   //cout<<total;
 
